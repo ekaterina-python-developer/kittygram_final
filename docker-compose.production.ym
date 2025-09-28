@@ -1,3 +1,4 @@
+version: '3.9'
 
 volumes:
   pg_data:
@@ -13,7 +14,7 @@ services:
       - pg_data:/var/lib/postgresql/data
 
   backend:
-    build: ./backend/
+    image: ${{ secrets.DOCKERHUB_USERNAME }}/kittygram_backend:latest
     container_name: backend
     env_file: .env
     volumes:
@@ -23,14 +24,13 @@ services:
       - db
 
   frontend:
-    build: ./frontend/
+    image: ${{ secrets.DOCKERHUB_USERNAME }}/kittygram_frontend:latest
     container_name: frontend
     volumes:
       - static:/static
-    command: sh -c "cp -r /app/build/. /static/ && npx -y http-server -p 8000 /app/build"
 
   gateway:
-    build: ./nginx/
+    image: ${{ secrets.DOCKERHUB_USERNAME }}/kittygram_gateway:latest
     container_name: gateway
     ports:
       - "9000:80"
