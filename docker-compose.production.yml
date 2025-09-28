@@ -14,7 +14,7 @@ services:
       - pg_data:/var/lib/postgresql/data
 
   backend:
-    image: ${{ secrets.DOCKERHUB_USERNAME }}/kittygram_backend:latest
+    image: lichnyy/kittygram_backend:latest  # ⬅️ ЗАМЕНИТЕ на ваше имя
     container_name: backend
     env_file: .env
     volumes:
@@ -24,13 +24,13 @@ services:
       - db
 
   frontend:
-    image: ${{ secrets.DOCKERHUB_USERNAME }}/kittygram_frontend:latest
+    image: lichnyy/kittygram_frontend:latest  # ⬅️ ЗАМЕНИТЕ на ваше имя
     container_name: frontend
     volumes:
       - static:/static
 
   gateway:
-    image: ${{ secrets.DOCKERHUB_USERNAME }}/kittygram_gateway:latest
+    image: lichnyy/kittygram_gateway:latest  # ⬅️ ЗАМЕНИТЕ на ваше имя
     container_name: gateway
     ports:
       - "9000:80"
