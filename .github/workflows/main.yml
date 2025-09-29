@@ -135,7 +135,7 @@ jobs:
         run: |
           echo "${{ secrets.ENV_FILE }}" > .env
       
-      - name: Copy docker-compose.production.yml to server
+      - name: Copy corrected docker-compose.production.yml to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SERVER_HOST }}

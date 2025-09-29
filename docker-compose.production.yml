@@ -14,7 +14,7 @@ services:
       - pg_data:/var/lib/postgresql/data
 
   backend:
-    image: lichnyy/kittygram_backend:latest  # ⬅️ ЗАМЕНИТЕ на ваше имя
+    image: lichnyy/kittygram_backend:latest  
     container_name: backend
     env_file: .env
     volumes:
@@ -24,13 +24,15 @@ services:
       - db
 
   frontend:
-    image: lichnyy/kittygram_frontend:latest  # ⬅️ ЗАМЕНИТЕ на ваше имя
+    image: lichnyy/kittygram_frontend:latest 
     container_name: frontend
+    command: sh -c "cp -r /app/build/. /static/ && tail -f /dev/null"
     volumes:
       - static:/static
+    
 
   gateway:
-    image: lichnyy/kittygram_gateway:latest  # ⬅️ ЗАМЕНИТЕ на ваше имя
+    image: lichnyy/kittygram_gateway:latest  
     container_name: gateway
     ports:
       - "9000:80"
