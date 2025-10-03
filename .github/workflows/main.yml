@@ -38,6 +38,7 @@ jobs:
         POSTGRES_USER: kittygram_user
         POSTGRES_PASSWORD: your_secure_password_123
         POSTGRES_DB: kittygram
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
         DB_HOST: 127.0.0.1
         DB_PORT: 5432
       run: |
