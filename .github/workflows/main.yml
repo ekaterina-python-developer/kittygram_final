@@ -149,7 +149,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           source: "docker-compose.production.yml"
-          target: "kittygram"    
+          target: "kittygram"
+          scp_args: "-O"    
           debug: true
      
       - name: Deploy application
