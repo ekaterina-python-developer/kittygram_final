@@ -11,8 +11,8 @@ router.register(r'achievements', AchievementViewSet)
 
 api_patterns = [
     path('', include(router.urls)),
-    path('', include('djoser.urls')),           
-    path('', include('djoser.urls.authtoken')), 
+    path('', include('djoser.urls')),
+    path('', include('djoser.urls.authtoken')),
 ]
 
 urlpatterns = [
@@ -21,5 +21,7 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT
+    )
