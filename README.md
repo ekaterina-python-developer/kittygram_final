@@ -91,6 +91,8 @@ docker-compose exec backend python manage.py collectstatic --no-input
 http://localhost:9000/
 
 
+
+
 ## API-примеры (Django REST API)
 
 📥 Получить список котиков:
@@ -212,4 +214,4 @@ GitHub Actions (CI/CD)
 
 ## 👩‍💻 Разработчик
 
-[Екатерина Понурова](https://github.com/ekaterina-python-developer)
+[Екатерина Воронова](https://github.com/ekaterina-python-developer)
