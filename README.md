@@ -50,7 +50,7 @@ DB_HOST=db
 DB_PORT=5432
 SECRET_KEY=your_django_secret_key
 DEBUG=False
-ALLOWED_HOSTS=127.0.0.1,localhost
+ALLOWED_HOSTS=127.0.0.1,localhost,backend
 ```
 
 ### 3. Запуск в контейнерах
@@ -66,6 +66,8 @@ docker-compose exec backend python manage.py migrate
 docker-compose exec backend python manage.py collectstatic --no-input
 ```
 
+### 5. Создание суперпользователя (опционально)
+
 ## 📌 Примеры работы
 
 После успешного запуска проект доступен по адресу:
@@ -73,50 +75,86 @@ docker-compose exec backend python manage.py collectstatic --no-input
 http://localhost:9000/
 
 
-## API-примеры (Django REST API)
+## 🔌 API-примеры (Django REST API)
 
-📥 Получить список котиков:
+Для работы с API требуется регистрация и аутентификация по токену.
 
-```
-GET /api/cats/
-
-```
-
-➕ Добавить котика (требуется авторизация):
+### Регистрация
 
 ```
-POST /api/cats/
+POST http://localhost:9000/api/users/
+
+Body:
 {
-  "name": "Барсик",
-  "birth_year": 2020,
-  "achievements": [1, 2]
+    "username": "demo_user",
+    "password": "demo_password123"
 }
+
+```
+### Aутентификация
+
+```
+POST http://localhost:9000/api/token/login/
+
+Body:
+{
+    "username": "demo_user",
+    "password": "demo_password123"
+}
+
+Ответ:
+
+{
+"auth_token": "ваш-токен-здесь"
+}
+
 ```
 
-Фронтенд доступен в браузере и подключается к этому же API.
+### Получить список котиков (авторизация по токену):
 
----
+```
+GET http://localhost:9000/api/cats/
 
-## 🚀 CI/CD
+Headers:
+Authorization: Token ваш-токен-здесь
 
-При пуше в ветку main:
+```
 
-1. Запускаются тесты (flake8 + unit-тесты для frontend и backend)
+Ответ
 
-2. Собираются образы и загружаются на Docker Hub
+```
+{
+    "count": 3,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "name": "Мило",
+            "color": "black",
+            "birth_year": 2025,
+            "achievements": [
+                {
+                    "id": 1,
+                    "achievement_name": "Милашка"
+                }
+            ],
+            "owner": 1,
+            "age": 1,
+            "image": "http://localhost:9000/media/cats/images/temp.jpeg",
+            "image_url": "/media/cats/images/temp.jpeg"
+        },
+        ...
+    ]
+}
 
-3. На сервере перезапускаются контейнеры с новыми версиями
+```
 
-4. Выполняются миграции и сбор статики
-
-5. В Telegram приходит уведомление об успешном деплое
-
----
 
 ## 🖥 Развёртывание на сервере (production)
+
 ### 1. Подготовка сервера
 
-Установите Docker и Docker Compose.
 Очистите сервер от лишних данных:
 
 ```
@@ -125,71 +163,46 @@ sudo journalctl --vacuum-time=1d
 sudo docker system prune -af
 ```
 
-Убедитесь, что Nginx установлен и запущен.
-
-### 2. Конфигурация Nginx
-
-Файл /etc/nginx/sites-enabled/default должен проксировать запросы в контейнер Kittygram:
+### 2. Установка Docker и Docker Compose
 
 ```
-server {
-    server_name infra.3utilities.com;
-
-    location / {
-        proxy_pass http://127.0.0.1:9000;
-    }
-}
+sudo apt update
+sudo apt install -y docker.io docker-compose-v2
+sudo usermod -aG docker $USER
 ```
 
-Перезапуск Nginx:
+### 3. Создайте SSH-ключ для GitHub Actions на сервере:
 
 ```
-sudo systemctl restart nginx
+ssh-keygen -t ed25519 -C "github-actions" -f ~/.ssh/github_actions -N ""
+cat ~/.ssh/github_actions.pub >> ~/.ssh/authorized_keys
 ```
 
-### 3. Развёртывание
+### 4. Добавьте Secrets в вашем форке репозитория:
 
-Создайте директорию проекта на сервере:
-
-```
-mkdir ~/kittygram && cd ~/kittygram
-```
-
-При деплое GitHub Actions автоматически:
-
-- подтянет свежие образы с Docker Hub
-
-- соберёт статику
-
-- применит миграции
-
-- запустит проект через docker-compose.production.yml
+SERVER_HOST: IP вашего сервера
+SERVER_USER: имя пользователя на сервере
+SSH_KEY: содержимое ~/.ssh/github_actions с сервера
+SECRET_KEY: сгенерируйте через openssl rand -base64 32
+DOCKERHUB_USERNAME: ваш логин Docker Hub
+DOCKERHUB_TOKEN: ваш токен Docker Hub
+TELEGRAM_CHAT_ID: ваш личный ID пользователя в Telegram 
+TELEGRAM_BOT_TOKEN: ваш токен Telegram Bot
 
 
-Ручной запуск:
+### 5. Запуск деплоя
 
-```
-docker compose -f docker-compose.production.yml down
-docker compose -f docker-compose.production.yml up -d
-```
+После настройки секретов:
+1. Сделайте push в ветку `main`
+2. Или запустите workflow вручную через **Actions → Kittygram CI/CD → Run workflow**
 
----
+GitHub Actions автоматически:
+- ✅ Запустит тесты
+- ✅ Соберёт Docker образы
+- ✅ Отправит их в Docker Hub
+- ✅ Развернёт на вашем сервере
+- ✅ Отправит уведомление в Telegram (если настроено)
 
-## 📂 Структура проекта
-
-```
-kittygram_final
-├── backend/         
-├── frontend/        
-├── nginx/           
-├── docker-compose.yml
-├── docker-compose.production.yml
-├── .github/workflows 
-├── tests.yml        
-└── README.md
-``` 
-
----
 
 ## 🛠️ Используемые технологии
 
@@ -204,6 +217,8 @@ Nginx
 Docker, Docker Compose
 
 GitHub Actions (CI/CD)
+
+Yandex Cloud
 
 ---
 
