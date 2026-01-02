@@ -10,7 +10,7 @@ jobs:
         host: ${{ secrets.SERVER_HOST }}
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SSH_KEY }}
-        script: echo "SSH подключение успешно!"
+        script: echo "SSH подключение успешно!!"
 
 
 # name: Kittygram CI/CD
