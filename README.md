@@ -52,7 +52,7 @@ DB_HOST=db
 DB_PORT=5432
 SECRET_KEY=your_django_secret_key
 DEBUG=False
-ALLOWED_HOSTS=127.0.0.1,localhost,backend
+ALLOWED_HOSTS=127.0.0.1,localhost,backend,<IP_ВАШЕГО_СЕРВЕРА>
 ```
 
 ### 3. Запуск в контейнерах
@@ -157,19 +157,9 @@ Authorization: Token ваш-токен-здесь
 
 ---
 
-## 🖥 Развёртывание на сервере (production)
+## 🖥 Развёртывание на сервере (Production)
 
-### 1. Подготовка сервера
-
-Очистите сервер от лишних данных:
-
-```
-sudo apt clean
-sudo journalctl --vacuum-time=1d
-sudo docker system prune -af
-```
-
-### 2. Установка Docker и Docker Compose
+### 1. Подготовка сервера (Ubuntu 24.04/22.04)
 
 ```
 sudo apt update
@@ -180,8 +170,15 @@ sudo usermod -aG docker $USER
 ### 3. Создайте SSH-ключ для GitHub Actions на сервере:
 
 ```
+# 1. Генерация ключа
 ssh-keygen -t ed25519 -C "github-actions" -f ~/.ssh/github_actions -N ""
+
+# 2. Добавление ключа в список разрешенных
 cat ~/.ssh/github_actions.pub >> ~/.ssh/authorized_keys
+
+# 3. Установка правильных прав доступа (БЕЗ ЭТОГО SSH НЕ СРАБОТАЕТ)
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
 ```
 
 ### 4. Добавьте Secrets в вашем форке репозитория:
@@ -189,7 +186,7 @@ cat ~/.ssh/github_actions.pub >> ~/.ssh/authorized_keys
 ```
 SERVER_HOST: IP вашего сервера
 SERVER_USER: имя пользователя на сервере
-SSH_KEY: содержимое ~/.ssh/github_actions с сервера
+SSH_KEY: Содержимое файла ~/.ssh/github_actions (выведите его командой cat ~/.ssh/github_actions). Копируйте вместе с BEGIN и END!
 SECRET_KEY: сгенерируйте через openssl rand -base64 32
 DOCKERHUB_USERNAME: ваш логин Docker Hub
 DOCKERHUB_TOKEN: ваш токен Docker Hub
