@@ -1,6 +1,6 @@
 ![Kittygram](screencapture-localhost-9000-2025-12-27-17_37_35.png)
 
-# 🐱 Kittygram Final Project
+# 🐱 Kittygram 
 
 ![Kittygram CI/CD](https://github.com/katya-voronova/kittygram_final/actions/workflows/main.yml/badge.svg)
 
