@@ -3,6 +3,9 @@
 # 🐱 Kittygram 
 
 ![Kittygram CI/CD](https://github.com/katya-voronova/kittygram_final/actions/workflows/main.yml/badge.svg)
+![Docker](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)
+![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 
 **Kittygram** — это веб-приложение для публикации и просмотра фотографий котиков.  
 Проект завернут в **Docker-контейнеры** и разворачивается с помощью **CI/CD на GitHub Actions**.  
